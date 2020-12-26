@@ -37,10 +37,6 @@ public class MyColumnListener extends AnalysisEventListener<MyColumn> {
      */
     @Override
     public void doAfterAllAnalysed(AnalysisContext analysisContext) {
-        for (MyColumn myColumn : myColumns) {
-            System.out.println(myColumn);
-        }
-
         // <表明，字段集合>
         Map<String, List<MyColumn>> myColumnMap = new HashMap<>();
         for (MyColumn myColumn : myColumns) {
@@ -115,9 +111,9 @@ public class MyColumnListener extends AnalysisEventListener<MyColumn> {
 
         for (Map.Entry<String, String> sqlEntry : sqlMap.entrySet()) {
             String tableName = sqlEntry.getKey();
-            System.out.println(String.format("--%s start------------------------------------------", tableName));
-            System.out.println(sqlEntry.getValue());
-            System.out.println(String.format("--%s end  ------------------------------------------", tableName));
+            MyUI.appendSqlTextArea(String.format("--%s start------------------------------------------", tableName));
+            MyUI.appendSqlTextArea(sqlEntry.getValue());
+            MyUI.appendSqlTextArea(String.format("--%s end  ------------------------------------------", tableName));
         }
 
         // do something
