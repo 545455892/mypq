@@ -14,9 +14,9 @@ public class MyUI {
     //把定义的JTextArea放到JScrollPane里面去
     private static JScrollPane sqlScrollPane = new JScrollPane(sqlTextArea);
     static {
-        sqlTextArea.setBounds(100,50,600,400);
+        sqlTextArea.setBounds(100,50,1000,600);
 
-        sqlScrollPane.setBounds(100,50,600,400);
+        sqlScrollPane.setBounds(100,50,1000,600);
         sqlScrollPane.setVisible(true);
         //分别设置水平和垂直滚动条自动出现
         sqlScrollPane.setHorizontalScrollBarPolicy(
@@ -38,7 +38,7 @@ public class MyUI {
         // 创建 JFrame 实例
         JFrame frame = new JFrame("SQL");
         // Setting the width and height of frame
-        frame.setSize(800, 600);
+        frame.setSize(1200, 800);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         /* 创建面板，这个类似于 HTML 的 div 标签
@@ -77,8 +77,9 @@ public class MyUI {
          * 创建文本域用于用户输入
          */
         JTextField userText = new JTextField(20);
-        userText.setText("C:\\Users\\UncleY\\Desktop\\11111.xlsx");
-        userText.setBounds(100,20,600,25);
+        // C:\Users\UncleY\Desktop\11111.xlsx
+        userText.setText("D:\\template.xlsx");
+        userText.setBounds(100,20,1000,25);
         panel.add(userText);
 
         // 输入密码的文本域
@@ -101,9 +102,14 @@ public class MyUI {
         loginButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                sqlTextArea.setText(new Date().toString());
-                String filePath = userText.getText();
-                EasyExcel.read(filePath, MyColumn.class, new MyColumnListener()).sheet().doRead();
+                try {
+                    sqlTextArea.setText(new Date().toString());
+                    String filePath = userText.getText();
+                    EasyExcel.read(filePath, MyColumn.class, new MyColumnListener()).sheet().doRead();
+                } catch (Throwable t) {
+                    appendSqlTextArea(t.toString());
+                }
+
             }
         });
 

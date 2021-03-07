@@ -10,10 +10,10 @@ public class MyColumn {
     @ExcelProperty(index = 0,value = "数据库")
     private String scheme;
     // 名称
-    @ExcelProperty(index = 1,value = "数据表")
+    @ExcelProperty(index = 1,value = "数据表明")
     private String tableName;
     // 创建时间
-    @ExcelProperty(index = 2,value = "表明")
+    @ExcelProperty(index = 2,value = "表描述")
     private String tableDesc;
     // 描述
     @ExcelProperty(index = 3,value = "字段名")

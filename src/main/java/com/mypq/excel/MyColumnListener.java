@@ -9,11 +9,11 @@ import java.util.*;
 
 public class MyColumnListener extends AnalysisEventListener<MyColumn> {
 
-    private static String firstLine = "CREATE TABLE IF NOT EXISTS `%s`(\n";
+    private static String firstLine = "CREATE TABLE `%s`(\n";
     // 字段名 columnType nullable
-    private static String columnLine = "`%s` %s %s,\n";
-    private static String pkLine = "PRIMARY KEY (%s)";
-    private static String lastLine = ") ENGINE=InnoDB DEFAULT CHARSET=utf8";
+    private static String columnLine = "`%s` %s %s %s,\n";
+    private static String pkLine = "PRIMARY KEY (%s)\n";
+    private static String lastLine = ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='%s'";
 
 
     // 用于存储读取到的数据
@@ -39,8 +39,10 @@ public class MyColumnListener extends AnalysisEventListener<MyColumn> {
     public void doAfterAllAnalysed(AnalysisContext analysisContext) {
         // <表明，字段集合>
         Map<String, List<MyColumn>> myColumnMap = new HashMap<>();
+        Map<String, String> tableDescMap = new HashMap<>();
         for (MyColumn myColumn : myColumns) {
             String tableName = myColumn.getTableName();
+            tableDescMap.put(tableName, myColumn.getTableDesc());
             List<MyColumn> myColumns = myColumnMap.get(tableName);
             if (CollectionUtils.isEmpty(myColumns)) {
                 myColumns = new LinkedList<>();
@@ -93,7 +95,12 @@ public class MyColumnListener extends AnalysisEventListener<MyColumn> {
                     pkList.add(columnName);
                 }
 
-                sql.append(String.format(columnLine, columnName, value, nullable));
+                String columnDesc = myColumn.getColumnDesc();
+                if (null != columnDesc && !"".equals(columnDesc)) {
+                    columnDesc = "COMMENT '" + columnDesc + "'";
+                }
+
+                sql.append(String.format(columnLine, columnName, value, nullable, columnDesc));
             }
 
             StringBuilder pkStr = new StringBuilder();
@@ -104,7 +111,7 @@ public class MyColumnListener extends AnalysisEventListener<MyColumn> {
 
             sql.append(String.format(pkLine, pkStr.toString()));
 
-            sql.append(lastLine);
+            sql.append(String.format(lastLine, tableDescMap.get(tableName)));
 
             sqlMap.put(tableName, sql.toString());
         }
